@@ -32,11 +32,11 @@ npm run build
 
 ## Estado atual
 
-O dashboard do aluno é um protótipo de interface com dados de demonstração definidos em `components/DashboardAluno.tsx`. Banco de dados, autenticação, API e painel do professor ainda não foram integrados.
+As quatro rotas do portal (`/`, `/trilha`, `/passaporte`, `/aulas`) têm navegação funcional. Os dados compartilhados de demonstração ficam em `lib/alunoDemo.ts`; as telas de Trilha, Passaporte e Aulas ainda são protótipos sem registros reais. Banco de dados, autenticação, API e painel do professor ainda não foram integrados.
 
 ## Próximos passos sugeridos
 
-1. Construir as telas e navegação de Trilha, Passaporte e Aulas.
-2. Definir regras de acesso para responsáveis, professores e administradores.
-3. Integrar Prisma e PostgreSQL/Supabase.
-4. Implementar autenticação e substituir os dados de demonstração por dados reais.
+1. Definir e implementar regras de acesso para responsáveis, professores e administradores.
+2. Integrar Prisma e PostgreSQL/Supabase.
+3. Implementar autenticação e substituir os dados de demonstração por dados reais.
+4. Cadastrar missões, calendário e carimbos oficiais do método.

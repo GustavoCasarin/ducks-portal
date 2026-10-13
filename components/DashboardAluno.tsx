@@ -1,46 +1,21 @@
 'use client';
 import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import PortalNavigation from '@/components/PortalNavigation';
+import { alunoDemo } from '@/lib/alunoDemo';
 import {
     Award,
-    Calendar,
     Flame,
     Volume2,
     ChevronRight,
     User,
     CheckCircle2,
     Compass,
-    BookOpen
 } from 'lucide-react';
 
 export default function DashboardAluno() {
-    // Dados simulados do Aluno (mock)
-    const aluno = {
-        nome: "Joãozinho Casarin",
-        faixa: "Branca e Cinza",
-        programa: "Kids 01 (5 a 8 anos)",
-        fotoUrl: null,
-        pma: {
-            comportamental: 8.5,
-            tecnico: 8.0,
-            geral: 8.25
-        },
-        grausColoridos: {
-            atencao: 80,    // 🔴 Vermelho
-            disciplina: 90, // 🟡 Amarelo
-            respeito: 100,  // 🔵 Azul
-            frequencia: 85, // 🟢 Verde
-        },
-        casaAtual: {
-            numero: 7,
-            nome: "O Giro do Tatu",
-            modulo: "Módulo 2 - Controle e Transição"
-        },
-        fraseAncora: {
-            ingles: "I can't yet, but if I set my mind into it I will.",
-            portugues: "Ainda não consigo, mas se eu me dedicar, eu vou conseguir.",
-            palavraChave: "Persistência / Persistence"
-        }
-    };
+    const aluno = alunoDemo;
 
     return (
         <div className="min-h-screen bg-[#0F0F11] text-zinc-100 pb-24 font-sans max-w-md mx-auto relative border-x border-zinc-800">
@@ -51,7 +26,7 @@ export default function DashboardAluno() {
                     <div className="flex items-center gap-3">
                         <div className="w-14 h-14 rounded-full bg-zinc-800 border-2 border-[#FF6B00] flex items-center justify-center overflow-hidden">
                             {aluno.fotoUrl ? (
-                                <img src={aluno.fotoUrl} alt={aluno.nome} className="w-full h-full object-cover" />
+                                <Image src={aluno.fotoUrl} alt={aluno.nome} width={56} height={56} unoptimized className="h-full w-full object-cover" />
                             ) : (
                                 <User className="w-7 h-7 text-zinc-400" />
                             )}
@@ -170,7 +145,7 @@ export default function DashboardAluno() {
                 </section>
 
                 {/* 4. A TRILHA DAS 27 CASAS (CARD RESUMO) */}
-                <section className="bg-[#18181B] border border-zinc-800 rounded-2xl p-4 shadow-sm hover:border-zinc-700 transition-colors cursor-pointer">
+                <Link href="/trilha" aria-label="Abrir Trilha das 27 Casas" className="block bg-[#18181B] border border-zinc-800 rounded-2xl p-4 shadow-sm hover:border-orange-500/40 focus-visible:outline-2 focus-visible:outline-[#FF6B00] transition-colors">
                     <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                             <Compass className="w-5 h-5 text-[#FF6B00]" />
@@ -189,7 +164,7 @@ export default function DashboardAluno() {
                             {aluno.casaAtual.numero}/27
                         </div>
                     </div>
-                </section>
+                </Link>
 
                 {/* 5. FRASE-ÂNCORA DO MÓDULO */}
                 <section className="bg-gradient-to-br from-zinc-900 to-[#18181B] border border-amber-500/20 rounded-2xl p-4 shadow-sm relative overflow-hidden">
@@ -203,34 +178,16 @@ export default function DashboardAluno() {
                     </div>
 
                     <p className="text-sm font-semibold italic text-zinc-200 mt-1">
-                        "{aluno.fraseAncora.ingles}"
+                        &ldquo;{aluno.fraseAncora.ingles}&rdquo;
                     </p>
                     <p className="text-xs text-zinc-400 mt-1">
-                        "{aluno.fraseAncora.portugues}"
+                        &ldquo;{aluno.fraseAncora.portugues}&rdquo;
                     </p>
                 </section>
 
             </main>
 
-            {/* NAV BAR INFERIOR (PWA MOBILE) */}
-            <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-[#18181B]/95 backdrop-blur-md border-t border-zinc-800 py-2.5 px-6 flex justify-between items-center z-50">
-                <button className="flex flex-col items-center gap-1 text-[#FF6B00]">
-                    <User className="w-5 h-5" />
-                    <span className="text-[10px] font-bold">Início</span>
-                </button>
-                <button className="flex flex-col items-center gap-1 text-zinc-500 hover:text-zinc-300">
-                    <Compass className="w-5 h-5" />
-                    <span className="text-[10px] font-medium">Trilha</span>
-                </button>
-                <button className="flex flex-col items-center gap-1 text-zinc-500 hover:text-zinc-300">
-                    <BookOpen className="w-5 h-5" />
-                    <span className="text-[10px] font-medium">Passaporte</span>
-                </button>
-                <button className="flex flex-col items-center gap-1 text-zinc-500 hover:text-zinc-300">
-                    <Calendar className="w-5 h-5" />
-                    <span className="text-[10px] font-medium">Aulas</span>
-                </button>
-            </nav>
+            <PortalNavigation />
 
         </div>
     );
