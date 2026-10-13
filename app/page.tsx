@@ -1,1 +1,5 @@
-'use client'; import DashboardAluno from '@/components/DashboardAluno'; export default function Home() { return (<main> </main>); }
+import DashboardAluno from "@/components/DashboardAluno";
+
+export default function Home() {
+  return <DashboardAluno />;
+}
