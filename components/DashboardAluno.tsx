@@ -12,6 +12,7 @@ import {
     User,
     CheckCircle2,
     Compass,
+    GraduationCap,
 } from 'lucide-react';
 
 export default function DashboardAluno() {
@@ -172,8 +173,21 @@ export default function DashboardAluno() {
                         <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-500/20">
                             Palavra-Âncora: {aluno.fraseAncora.palavraChave}
                         </span>
-                        <button className="text-zinc-400 hover:text-white p-1 rounded-full bg-zinc-800">
-                            <Volume2 className="w-4 h-4 text-amber-400" />
+                        <button
+                            type="button"
+                            aria-label="Ouvir a frase-âncora em inglês"
+                            title="Ouvir a frase-âncora"
+                            onClick={() => {
+                                if ("speechSynthesis" in window && "SpeechSynthesisUtterance" in window) {
+                                    const fala = new SpeechSynthesisUtterance(aluno.fraseAncora.ingles);
+                                    fala.lang = "en-US";
+                                    window.speechSynthesis.cancel();
+                                    window.speechSynthesis.speak(fala);
+                                }
+                            }}
+                            className="rounded-full bg-zinc-800 p-2 text-zinc-400 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-[#FF6B00]"
+                        >
+                            <Volume2 aria-hidden="true" className="w-4 h-4 text-amber-400" />
                         </button>
                     </div>
 
@@ -185,6 +199,9 @@ export default function DashboardAluno() {
                     </p>
                 </section>
 
+                <Link href="/professor" className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-dashed border-zinc-700 bg-zinc-900/60 p-3 text-xs font-bold text-zinc-400 transition-colors hover:border-[#FF6B00] hover:text-[#FF6B00]">
+                    <GraduationCap aria-hidden="true" className="h-4 w-4" /> Prévia demonstrativa: Painel do Professor
+                </Link>
             </main>
 
             <PortalNavigation />

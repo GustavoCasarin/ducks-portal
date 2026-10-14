@@ -40,3 +40,16 @@ As quatro rotas do portal (`/`, `/trilha`, `/passaporte`, `/aulas`) têm navega�
 2. Integrar Prisma e PostgreSQL/Supabase.
 3. Implementar autenticação e substituir os dados de demonstração por dados reais.
 4. Cadastrar missões, calendário e carimbos oficiais do método.
+
+## Painel do Professor — demonstração
+
+Acesse **`/professor`** (ou o link no rodapé do dashboard) para testar:
+
+- Seleção de turma Kids 01 / Kids 02.
+- Chamada em lote: marcar todos presentes, desmarcar faltantes e concluir uma prévia.
+- Seleção de conteúdo/carimbo do dia para os presentes.
+- Avaliação PMA mensal com quatro sliders e cálculo demonstrativo.
+
+**Importante:** o painel utiliza exclusivamente dados fictícios em `lib/professorDemo.ts`. Seu estado existe **somente na memória do navegador**, desaparece após recarregar a página e não é enviado aos responsáveis. A rota ainda é pública e precisa de autenticação/autorização antes de utilizar dados reais.
+
+O arquivo `prisma/schema.prisma` e o documento `docs/modelagem-e-regras.md` são **propostas de modelagem**, ainda não aplicadas a banco algum. Os pesos do PMA e os critérios de progressão precisam ser confirmados com a Ducks antes da implementação do backend.

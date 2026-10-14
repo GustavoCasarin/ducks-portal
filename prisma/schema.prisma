@@ -1,0 +1,228 @@
+// PROPOSTA DE MODELAGEM — NÃO APLICAR MIGRAÇÕES EM PRODUÇÃO AINDA.
+// Sintaxe planejada para Prisma ORM 6 + PostgreSQL/Supabase.
+// Auth: usuários são autenticados pelo Supabase Auth. NUNCA gravar senhas aqui.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Papel {
+  RESPONSAVEL
+  PROFESSOR
+  ADMIN
+}
+
+enum Programa {
+  KIDS_01
+  KIDS_02
+}
+
+enum SituacaoMatricula {
+  ATIVA
+  TRANCADA
+  ENCERRADA
+}
+
+enum SituacaoPresenca {
+  PRESENTE
+  FALTA
+  JUSTIFICADA
+}
+
+enum SituacaoMissao {
+  BLOQUEADA
+  EM_ANDAMENTO
+  CONCLUIDA
+}
+
+enum CategoriaPassaporte {
+  ANIMAL
+  CORPO
+  PALAVRA_ANCORA
+  LINGUAGEM_COMBATE
+}
+
+model Usuario {
+  id             String           @id @default(uuid()) @db.Uuid
+  authUserId     String           @unique @db.Uuid // Referência à auth.users do Supabase
+  nome           String
+  email          String           @unique
+  papel          Papel
+  criadoEm       DateTime         @default(now())
+  atualizadoEm   DateTime         @updatedAt
+  responsaveis   VinculoResponsavel[]
+  turmasProfessor ProfessorTurma[]
+  avaliacoes     AvaliacaoPMA[]
+  chamadas       Presenca[]       @relation("RegistroPresenca")
+}
+
+model Aluno {
+  id              String                @id @default(uuid()) @db.Uuid
+  nome            String
+  fotoUrl         String?
+  faixa           String
+  programa        Programa
+  criadoEm        DateTime              @default(now())
+  atualizadoEm    DateTime              @updatedAt
+  responsaveis    VinculoResponsavel[]
+  matriculas      Matricula[]
+  presencas       Presenca[]
+  avaliacoes      AvaliacaoPMA[]
+  progressoGraus  ProgressoGraus?
+  progressoMissoes ProgressoMissao[]
+  conquistas      ConquistaPassaporte[]
+}
+
+// Um responsável pode ter vários alunos; um aluno pode ter mais de um responsável.
+model VinculoResponsavel {
+  responsavelId String  @db.Uuid
+  alunoId       String  @db.Uuid
+  parentesco    String?
+  responsavel   Usuario @relation(fields: [responsavelId], references: [id], onDelete: Cascade)
+  aluno         Aluno   @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+
+  @@id([responsavelId, alunoId])
+}
+
+model Turma {
+  id           String           @id @default(uuid()) @db.Uuid
+  nome         String
+  programa     Programa
+  horario      String?          // Rótulo temporário; futura agenda poderá ser normalizada.
+  ativa        Boolean          @default(true)
+  professores  ProfessorTurma[]
+  matriculas   Matricula[]
+  aulas        Aula[]
+}
+
+model ProfessorTurma {
+  professorId String  @db.Uuid
+  turmaId     String  @db.Uuid
+  professor   Usuario @relation(fields: [professorId], references: [id], onDelete: Cascade)
+  turma       Turma   @relation(fields: [turmaId], references: [id], onDelete: Cascade)
+
+  @@id([professorId, turmaId])
+}
+
+model Matricula {
+  alunoId    String            @db.Uuid
+  turmaId    String            @db.Uuid
+  situacao   SituacaoMatricula @default(ATIVA)
+  criadaEm   DateTime          @default(now())
+  aluno      Aluno             @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+  turma      Turma             @relation(fields: [turmaId], references: [id], onDelete: Cascade)
+
+  @@id([alunoId, turmaId])
+}
+
+model Aula {
+  id                String               @id @default(uuid()) @db.Uuid
+  turmaId           String               @db.Uuid
+  dataInicio        DateTime
+  duracaoMinutos    Int                  @default(64)
+  conteudoDiaId     String?              @db.Uuid
+  turma             Turma                @relation(fields: [turmaId], references: [id])
+  conteudoDia       ConteudoPassaporte?   @relation(fields: [conteudoDiaId], references: [id])
+  presencas         Presenca[]
+  conquistas        ConquistaPassaporte[]
+
+  @@unique([turmaId, dataInicio])
+  @@index([dataInicio])
+}
+
+model Presenca {
+  id               String           @id @default(uuid()) @db.Uuid
+  aulaId           String           @db.Uuid
+  alunoId          String           @db.Uuid
+  registradaPorId  String           @db.Uuid
+  situacao         SituacaoPresenca
+  atualizadaEm     DateTime         @updatedAt
+  aula             Aula             @relation(fields: [aulaId], references: [id], onDelete: Cascade)
+  aluno            Aluno            @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+  registradaPor    Usuario          @relation("RegistroPresenca", fields: [registradaPorId], references: [id])
+
+  @@unique([aulaId, alunoId])
+  @@index([alunoId, situacao])
+}
+
+model AvaliacaoPMA {
+  id                String   @id @default(uuid()) @db.Uuid
+  alunoId           String   @db.Uuid
+  avaliadorId       String   @db.Uuid
+  competencia       String   // YYYY-MM; validar no serviço
+  moduloNome        String
+  atencao           Int
+  disciplina        Int
+  respeito          Int
+  tecnica           Int
+  pmaComportamental Float
+  pmaTecnico        Float
+  pmaGeral          Float
+  dataAvaliacao     DateTime @default(now())
+  aluno             Aluno    @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+  avaliador         Usuario  @relation(fields: [avaliadorId], references: [id])
+
+  @@unique([alunoId, competencia, moduloNome])
+  @@index([alunoId, dataAvaliacao])
+}
+
+model ProgressoGraus {
+  alunoId        String   @id @db.Uuid
+  atencao        Int      @default(0)
+  disciplina     Int      @default(0)
+  respeito       Int      @default(0)
+  frequencia     Int      @default(0)
+  versaoRegra    String   @default("rascunho-v1")
+  atualizadoEm   DateTime @updatedAt
+  aluno          Aluno    @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+}
+
+model MissaoTrilha {
+  id          String           @id @default(uuid()) @db.Uuid
+  numero      Int
+  programa    Programa
+  titulo      String
+  moduloNome  String
+  descricao   String?
+  progressos  ProgressoMissao[]
+
+  @@unique([programa, numero])
+}
+
+model ProgressoMissao {
+  alunoId       String        @db.Uuid
+  missaoId      String        @db.Uuid
+  situacao      SituacaoMissao @default(BLOQUEADA)
+  concluidaEm   DateTime?
+  aluno         Aluno         @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+  missao        MissaoTrilha  @relation(fields: [missaoId], references: [id])
+
+  @@id([alunoId, missaoId])
+}
+
+model ConteudoPassaporte {
+  id          String               @id @default(uuid()) @db.Uuid
+  categoria   CategoriaPassaporte
+  termoBase   String
+  traducoes   Json?                // Ex.: { "EN": "Eagle", "ES": "Águila" }
+  aulas       Aula[]
+  conquistas  ConquistaPassaporte[]
+}
+
+model ConquistaPassaporte {
+  id          String             @id @default(uuid()) @db.Uuid
+  alunoId     String             @db.Uuid
+  conteudoId  String             @db.Uuid
+  aulaId      String             @db.Uuid
+  recebidoEm  DateTime           @default(now())
+  aluno       Aluno              @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+  conteudo    ConteudoPassaporte @relation(fields: [conteudoId], references: [id])
+  aula        Aula               @relation(fields: [aulaId], references: [id])
+
+  @@unique([alunoId, conteudoId, aulaId])
+}
