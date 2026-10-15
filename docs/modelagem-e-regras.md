@@ -10,8 +10,10 @@ Este documento descreve **uma proposta técnica**, ainda sujeita à aprovação 
 4. `Aula` contém data, turma e conteúdo pedagógico do dia. `Presenca` é única por (`aulaId`, `alunoId`); chamada múltipla deve usar transação/`upsert` no backend.
 5. O carimbo do passaporte é uma conquista de aluno vinculada à aula e ao conteúdo (`ConquistaPassaporte`). Não duplicar carimbos da mesma aula e conteúdo.
 6. `AvaliacaoPMA` mantém as quatro notas e os três resultados. O backend recalcula os resultados antes de persistir e verifica o acesso do professor.
-7. `MissaoTrilha` define as 27 casas por programa; `ProgressoMissao` registra o avanço do aluno.
-8. `ProgressoGraus` guarda os quatro percentuais e a versão da regra aplicada. Não é fonte de verdade isolada; frequência precisa ser derivada das aulas válidas.
+7. `ModuloCurricular` contém quatro `MissaoSemanal` por ciclo; uma missão pode englobar duas aulas. As **27 casas** agora são `CasaHabilidade`, separadas das missões. `AulaHabilidade` informa quais casas foram trabalhadas.
+8. As **estrelas são contagens derivadas** de `Presenca = PRESENTE` em `Aula = REALIZADA` relacionadas a `AulaHabilidade`, e **não** medem domínio. Não criar uma tabela de estrelas redundantes.
+9. `Dinamica`, `DinamicaHabilidade` e `AplicacaoDinamica` permitem planejar, confirmar e consultar dinâmicas sem removê-las do catálogo.
+10. `ProgressoGraus` guarda os quatro percentuais e a versão da regra aplicada. Não é fonte de verdade isolada; frequência precisa ser derivada das aulas válidas.
 
 ## Regras provisórias que precisam de validação
 
@@ -20,8 +22,8 @@ Este documento descreve **uma proposta técnica**, ainda sujeita à aprovação 
 - **PMA técnico** = nota Técnica.
 - **PMA geral** = média entre PMA comportamental não arredondado e PMA técnico (arredondada para 2 casas decimais).
 - A frequência não entra no PMA demonstrativo. O denominador oficial (aulas previstas, reposições, justificativas, matrículas parciais) ainda precisa ser definido.
-- Os critérios para transformar notas em Graus Coloridos, para concluir uma casa e para troca de faixa **não estão definidos**: não adotar fórmulas arbitrárias em produção.
-- Como são 27 casas por programa, certificar se Kids 01 e Kids 02 compartilham missões antes de alimentar o banco.
+- Os critérios para transformar notas em Graus Coloridos, para concluir uma **missão** e para troca de faixa **não estão definidos**: não adotar fórmulas arbitrárias em produção. **As casas não precisam ser concluídas para receber estrelas.**
+- Confirmar a lista oficial das 27 casas por programa e se Kids 01 e Kids 02 compartilham habilidades antes de alimentar o banco. As missões são semanais, e não uma sequência de 27 casas. Veja `docs/metodo-ducks-validado.md`.
 
 ## Segurança e dados de crianças
 
