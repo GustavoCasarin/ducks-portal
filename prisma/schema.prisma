@@ -40,6 +40,18 @@ enum SituacaoMissao {
   CONCLUIDA
 }
 
+enum SituacaoAula {
+  PREVISTA
+  REALIZADA
+  CANCELADA
+}
+
+enum SituacaoDinamica {
+  PLANEJADA
+  REALIZADA
+  CANCELADA
+}
+
 enum CategoriaPassaporte {
   ANIMAL
   CORPO
@@ -98,6 +110,7 @@ model Turma {
   professores  ProfessorTurma[]
   matriculas   Matricula[]
   aulas        Aula[]
+  dinamicasPlanejadas AplicacaoDinamica[]
 }
 
 model ProfessorTurma {
@@ -125,8 +138,14 @@ model Aula {
   turmaId           String               @db.Uuid
   dataInicio        DateTime
   duracaoMinutos    Int                  @default(64)
+  situacao          SituacaoAula         @default(PREVISTA)
+  missaoId          String?              @db.Uuid
+  numeroEncontro    Int?                 // 1 ou 2, a validar na camada de serviço
   conteudoDiaId     String?              @db.Uuid
   turma             Turma                @relation(fields: [turmaId], references: [id])
+  missao            MissaoSemanal?       @relation(fields: [missaoId], references: [id])
+  habilidades       AulaHabilidade[]
+  aplicacoesDinamica AplicacaoDinamica[]
   conteudoDia       ConteudoPassaporte?   @relation(fields: [conteudoDiaId], references: [id])
   presencas         Presenca[]
   conquistas        ConquistaPassaporte[]
@@ -182,27 +201,109 @@ model ProgressoGraus {
   aluno          Aluno    @relation(fields: [alunoId], references: [id], onDelete: Cascade)
 }
 
-model MissaoTrilha {
-  id          String           @id @default(uuid()) @db.Uuid
-  numero      Int
-  programa    Programa
-  titulo      String
-  moduloNome  String
-  descricao   String?
-  progressos  ProgressoMissao[]
+// Um módulo curricular contém quatro missões semanais (duas aulas por missão).
+// A estrutura de currículo NÃO deve ser confundida com as 27 casas de habilidades.
+model ModuloCurricular {
+  id        String          @id @default(uuid()) @db.Uuid
+  numero    Int
+  programa  Programa
+  titulo    String
+  missoes   MissaoSemanal[]
 
   @@unique([programa, numero])
 }
 
+model MissaoSemanal {
+  id                   String            @id @default(uuid()) @db.Uuid
+  moduloId             String            @db.Uuid
+  numero               Int               // 1 a 4 dentro do módulo
+  titulo               String
+  descricao            String?
+  modulo               ModuloCurricular  @relation(fields: [moduloId], references: [id])
+  aulas                Aula[]
+  progressos           ProgressoMissao[]
+  aplicacoesDinamicas  AplicacaoDinamica[]
+
+  @@unique([moduloId, numero])
+}
+
+// Uma possível avaliação de missão é distinta de presença e estrelas.
+// As regras para concluir uma missão ainda precisam ser validadas.
 model ProgressoMissao {
-  alunoId       String        @db.Uuid
-  missaoId      String        @db.Uuid
+  alunoId       String         @db.Uuid
+  missaoId      String         @db.Uuid
   situacao      SituacaoMissao @default(BLOQUEADA)
   concluidaEm   DateTime?
-  aluno         Aluno         @relation(fields: [alunoId], references: [id], onDelete: Cascade)
-  missao        MissaoTrilha  @relation(fields: [missaoId], references: [id])
+  aluno         Aluno          @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+  missao        MissaoSemanal  @relation(fields: [missaoId], references: [id])
 
   @@id([alunoId, missaoId])
+}
+
+// Casas são HABILIDADES, não missões nem níveis de aprovação.
+model CasaHabilidade {
+  id             String               @id @default(uuid()) @db.Uuid
+  numero         Int                  // 1 a 27 por programa
+  programa       Programa
+  titulo         String
+  descricao      String?
+  aulas          AulaHabilidade[]
+  dinamicas      DinamicaHabilidade[]
+
+  @@unique([programa, numero])
+}
+
+// Quais habilidades foram efetivamente trabalhadas nesta aula?
+model AulaHabilidade {
+  aulaId String        @db.Uuid
+  casaId String        @db.Uuid
+  aula   Aula          @relation(fields: [aulaId], references: [id], onDelete: Cascade)
+  casa   CasaHabilidade @relation(fields: [casaId], references: [id])
+
+  @@id([aulaId, casaId])
+}
+
+model Dinamica {
+  id              String               @id @default(uuid()) @db.Uuid
+  nome            String
+  descricao       String?
+  duracaoMinutos  Int?
+  materiais       String?
+  programa        Programa?
+  testada         Boolean              @default(false)
+  ativa           Boolean              @default(true)
+  habilidades     DinamicaHabilidade[]
+  aplicacoes      AplicacaoDinamica[]
+}
+
+model DinamicaHabilidade {
+  dinamicaId String         @db.Uuid
+  casaId     String         @db.Uuid
+  dinamica   Dinamica       @relation(fields: [dinamicaId], references: [id], onDelete: Cascade)
+  casa       CasaHabilidade @relation(fields: [casaId], references: [id])
+
+  @@id([dinamicaId, casaId])
+}
+
+// Dinâmica nunca sai do catálogo por ter sido utilizada.
+// 'REALIZADA' é diferente de 'PLANEJADA'; aulaRealizadaId só é informado na execução.
+model AplicacaoDinamica {
+  id               String           @id @default(uuid()) @db.Uuid
+  turmaId          String           @db.Uuid
+  missaoId         String           @db.Uuid
+  dinamicaId       String           @db.Uuid
+  periodoLetivo    String           // Ex.: 2026.2 (validar/normalizar depois)
+  situacao         SituacaoDinamica @default(PLANEJADA)
+  aulaRealizadaId  String?          @db.Uuid
+  planejadaEm      DateTime         @default(now())
+  realizadaEm      DateTime?
+  turma            Turma            @relation(fields: [turmaId], references: [id])
+  missao           MissaoSemanal    @relation(fields: [missaoId], references: [id])
+  dinamica         Dinamica         @relation(fields: [dinamicaId], references: [id])
+  aulaRealizada    Aula?            @relation(fields: [aulaRealizadaId], references: [id])
+
+  @@index([turmaId, periodoLetivo, situacao])
+  @@index([dinamicaId, situacao, realizadaEm])
 }
 
 model ConteudoPassaporte {

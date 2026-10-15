@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import PortalNavigation from '@/components/PortalNavigation';
 import { alunoDemo } from '@/lib/alunoDemo';
+import { aulasDeExemplo, estrelasPorCasa, presencasDeExemplo } from '@/lib/jornada';
 import {
     Award,
     Flame,
@@ -13,10 +14,13 @@ import {
     CheckCircle2,
     Compass,
     GraduationCap,
+    Star,
 } from 'lucide-react';
 
 export default function DashboardAluno() {
     const aluno = alunoDemo;
+    const estrelas = estrelasPorCasa("a1", aulasDeExemplo, presencasDeExemplo);
+    const totalEstrelas = Object.values(estrelas).reduce((acc, n) => acc + n, 0);
 
     return (
         <div className="min-h-screen bg-[#0F0F11] text-zinc-100 pb-24 font-sans max-w-md mx-auto relative border-x border-zinc-800">
@@ -150,19 +154,19 @@ export default function DashboardAluno() {
                     <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                             <Compass className="w-5 h-5 text-[#FF6B00]" />
-                            <h2 className="text-sm font-bold uppercase tracking-wide text-zinc-200">Trilha das 27 Casas</h2>
+                            <h2 className="text-sm font-bold uppercase tracking-wide text-zinc-200">Minhas 27 Casas</h2>
                         </div>
                         <ChevronRight className="w-5 h-5 text-zinc-500" />
                     </div>
 
                     <div className="bg-zinc-900 p-3 rounded-xl border border-zinc-800/80 flex items-center justify-between">
                         <div>
-                            <span className="text-[10px] uppercase text-[#FF6B00] font-bold tracking-wider">Casa Atual</span>
-                            <h3 className="text-base font-extrabold text-white">Casa {aluno.casaAtual.numero}: {aluno.casaAtual.nome}</h3>
-                            <p className="text-xs text-zinc-400">{aluno.casaAtual.modulo}</p>
+                            <span className="text-[10px] uppercase text-[#FF6B00] font-bold tracking-wider">Diário de presença</span>
+                            <h3 className="text-base font-extrabold text-white">27 casas de habilidades</h3>
+                            <p className="text-xs text-zinc-400">Estrelinhas por participação nas aulas · demonstração</p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-[#FF6B00]/20 border border-[#FF6B00] text-[#FF6B00] flex items-center justify-center font-bold text-sm">
-                            {aluno.casaAtual.numero}/27
+                        <div className="min-w-12 h-10 gap-1 rounded-full bg-[#FF6B00]/20 border border-[#FF6B00] text-[#FF6B00] flex items-center justify-center font-bold text-sm">
+                            <Star aria-hidden="true" className="h-4 w-4 fill-current" /> {totalEstrelas}
                         </div>
                     </div>
                 </Link>

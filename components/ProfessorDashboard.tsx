@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  ArrowLeft, BookOpenCheck, CalendarCheck2, Check, CheckCheck, ChevronDown,
+  ArrowLeft, Library, BookOpenCheck, CalendarCheck2, Check, CheckCheck, ChevronDown,
   CircleAlert, ClipboardCheck, ClipboardList, Flame, GraduationCap, Medal,
   RotateCcw, Save, ShieldAlert, Sparkles, Users, X,
 } from "lucide-react";
@@ -111,9 +111,14 @@ export default function ProfessorDashboard() {
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#FF6B00] text-black"><GraduationCap aria-hidden="true" className="h-6 w-6" /></div>
             <div><p className="text-xs font-black tracking-[0.2em] text-[#FF6B00]">DUCKS JIU-JITSU</p><p className="text-base font-bold">Painel do Professor</p></div>
           </div>
-          <Link href="/" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-zinc-700 px-3 text-sm text-zinc-300 hover:border-zinc-500 hover:text-white">
-            <ArrowLeft aria-hidden="true" className="h-4 w-4" /> Portal do aluno
-          </Link>
+          <div className="flex flex-wrap gap-2">
+            <Link href="/professor/planejamento" className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-[#FF6B00] px-3 text-sm font-bold text-black hover:bg-orange-400">
+              <Library aria-hidden="true" className="h-4 w-4" /> Banco de Dinâmicas
+            </Link>
+            <Link href="/" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-zinc-700 px-3 text-sm text-zinc-300 hover:border-zinc-500 hover:text-white">
+              <ArrowLeft aria-hidden="true" className="h-4 w-4" /> Portal do aluno
+            </Link>
+          </div>
         </div>
       </header>
 
