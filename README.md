@@ -71,3 +71,7 @@ npm run test:logic
 ```
 
 O teste de lógica utiliza o suporte a TypeScript do Node.js 22+. Para instalar/rodar o projeto normalmente, seguem válidos os requisitos oficiais do Next.js.
+
+### Catálogo das 27 casas (Kids 01 e Kids 02)
+
+Os nomes oficiais e marcos após as casas **04, 09, 14, 23 e 27** estão em [`docs/catalogo-27-casas.md`](docs/catalogo-27-casas.md) e `lib/catalogoTrilhas.ts`. A casa **12** é *Vapores* em Kids 01 e *4 apoios* em Kids 02; Atenção e Respeito aparecem em posições invertidas. A página `/trilha` permite pré-visualizar ambos os currículos, sem atribuir ao aluno demonstrativo a frequência de outro programa. As estrelinhas são contagens fictícias de **presença**, sem concessão automática de grau ou faixa.

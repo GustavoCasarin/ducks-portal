@@ -1,13 +1,13 @@
 # Método Ducks — regras consolidadas após conversas com o professor
 
-> Estado: **regras de presença/estrelinhas confirmadas**. Exemplos de missões e dinâmicas são fictícios; catálogo oficial ainda será fornecido pela Ducks. Não aplicar migração nem usar dados reais antes da autenticação, autorização e revisão LGPD.
+> Estado: **regras de presença/estrelinhas confirmadas**. As 27 casas por programa foram fornecidas pela Ducks; exemplos de missões e dinâmicas continuam fictícios e seus catálogos oficiais ainda precisam ser validados. Não aplicar migração nem usar dados reais antes da autenticação, autorização e revisão LGPD.
 
 ## 1. Estrutura curricular
 
 - **Módulo**: ciclo de cerca de 1 mês, normalmente com 4 missões semanais.
 - **Missão**: aproximadamente 1 semana, trabalhada em 2 aulas (8 aulas/módulo).
 - **Dinâmica**: brincadeira/atividade associada à missão e opcionalmente às habilidades; idealmente uma por semana (aula sim, aula não). As dinâmicas testadas ficam num catálogo, com histórico de utilização por turma e período letivo.
-- **Casa**: uma das **27 habilidades/competências** do percurso anual (como mobilidade, equilíbrio, raspagem e espírito de equipe — títulos e numeração oficiais pendentes). **Uma casa não é igual a uma missão.** Uma habilidade pode ser abordada em mais de um módulo ou missão.
+- **Casa**: uma das **27 habilidades/competências** do percurso anual (como equilíbrio, rolamento, raspagem e espírito de equipe — títulos e numeração oficiais de Kids 01 e Kids 02 recebidos, em `docs/catalogo-27-casas.md`). **Uma casa não é igual a uma missão.** Uma habilidade pode ser abordada em mais de um módulo ou missão.
 - **Estrela**: confirmação de **presença/participação** na aula que trabalhou a habilidade daquela casa, **não** domínio técnico nem aprovação.
 - **Carimbo do Passaporte**: recurso separado para conteúdos de idiomas e linguagem de combate, cujos critérios ainda serão definidos.
 - **PMA**: avaliação técnica/comportamental separada, com pesos a validar oficialmente.
@@ -40,7 +40,7 @@ No banco real, as consultas devem checar autorização de responsável/professor
 
 ## 4. O que ainda depende de definição
 
-- Lista oficial, nomes e organização das 27 casas para Kids 01 e Kids 02.
+- Os nomes e a ordem das 27 casas por programa foram recebidos; validar grafias finais e marcos de graduação antes de aplicar migrações.
 - Critérios de avaliação de domínio técnico, distintos das estrelas.
 - Como medir PMA, converter avaliações em Graus Coloridos e conceder faixas.
 - Procedimento de correção de chamadas, suspensão e reposições de aulas.
@@ -50,12 +50,12 @@ No banco real, as consultas devem checar autorização de responsável/professor
 ## 5. Protótipo desta etapa
 
 - `/professor/planejamento`: escolher turma, missão e dinâmica; planejar/confirmar/cancelar, mostrar histórico de uso. Somente dados fictícios e `localStorage` do navegador.
-- `/trilha`: 27 casas com estrelas demonstrativas derivadas de presença (sem progressão artificial por casa numérica).
+- `/trilha`: catálogo oficial Kids 01/02, diferenças da casa 12, marcos após 4/9/14/23/27 e estrelas demonstrativas derivadas de presença (sem progressão artificial por casa numérica).
 - Nenhuma das ações deste protótipo modifica banco real ou acessa dados pessoais.
 
 ## 6. Sequência sugerida de implementação real
 
-1. Validar o catálogo de casas e dinâmicas com os professores.
+1. Confirmar eventuais grafias do catálogo de 27 casas (`docs/catalogo-27-casas.md`) e coletar o catálogo de dinâmicas com os professores.
 2. Integrar Supabase Auth e aplicar autorização por papel/turma e responsável/aluno.
 3. Criar migrações das entidades curriculares em ambiente de testes.
 4. Persistir aulas, habilidades efetivamente trabalhadas, presenças e histórico das dinâmicas.

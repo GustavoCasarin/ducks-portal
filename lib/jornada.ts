@@ -46,10 +46,10 @@ export function estrelasPorCasa(
 
 /** Apenas dados fictícios para visualizar o funcionamento das estrelas. */
 export const aulasDeExemplo: AulaJornada[] = [
-  { id: "ex-1", situacao: "REALIZADA", casasTrabalhadas: [7] },
-  { id: "ex-2", situacao: "REALIZADA", casasTrabalhadas: [7, 3] },
-  { id: "ex-3", situacao: "REALIZADA", casasTrabalhadas: [7] },
-  { id: "ex-4", situacao: "CANCELADA", casasTrabalhadas: [7] },
+  { id: "ex-1", situacao: "REALIZADA", casasTrabalhadas: [2] }, // Rolamento
+  { id: "ex-2", situacao: "REALIZADA", casasTrabalhadas: [2, 3] }, // Ausente
+  { id: "ex-3", situacao: "REALIZADA", casasTrabalhadas: [2, 7] }, // Rolamento e Guarda fechada
+  { id: "ex-4", situacao: "CANCELADA", casasTrabalhadas: [2] },
 ];
 export const presencasDeExemplo: RegistroPresencaJornada[] = [
   { aulaId: "ex-1", alunoId: "a1", situacao: "PRESENTE" },

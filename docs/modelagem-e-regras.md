@@ -23,7 +23,7 @@ Este documento descreve **uma proposta técnica**, ainda sujeita à aprovação 
 - **PMA geral** = média entre PMA comportamental não arredondado e PMA técnico (arredondada para 2 casas decimais).
 - A frequência não entra no PMA demonstrativo. O denominador oficial (aulas previstas, reposições, justificativas, matrículas parciais) ainda precisa ser definido.
 - Os critérios para transformar notas em Graus Coloridos, para concluir uma **missão** e para troca de faixa **não estão definidos**: não adotar fórmulas arbitrárias em produção. **As casas não precisam ser concluídas para receber estrelas.**
-- Confirmar a lista oficial das 27 casas por programa e se Kids 01 e Kids 02 compartilham habilidades antes de alimentar o banco. As missões são semanais, e não uma sequência de 27 casas. Veja `docs/metodo-ducks-validado.md`.
+- A lista de 27 casas por programa já foi fornecida (`docs/catalogo-27-casas.md`); somente a casa 12 difere entre Kids 01 e Kids 02. Os marcos visuais de grau após as casas 4/9/14/23/27 não constituem concessão automática. As missões são semanais, e não uma sequência de 27 casas. Veja `docs/metodo-ducks-validado.md`.
 
 ## Segurança e dados de crianças
 

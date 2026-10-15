@@ -3,6 +3,7 @@ export const alunoDemo = {
   nome: "Joãozinho Casarin",
   faixa: "Branca e Cinza",
   programa: "Kids 01 (5 a 8 anos)",
+  programaCodigo: "KIDS_01" as const,
   fotoUrl: null as string | null,
   pma: { comportamental: 8.5, tecnico: 8.0, geral: 8.25 },
   grausColoridos: { atencao: 80, disciplina: 90, respeito: 100, frequencia: 85 },
