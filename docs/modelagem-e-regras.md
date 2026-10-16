@@ -10,10 +10,11 @@ Este documento descreve **uma proposta técnica**, ainda sujeita à aprovação 
 4. `Aula` contém data, turma e conteúdo pedagógico do dia. `Presenca` é única por (`aulaId`, `alunoId`); chamada múltipla deve usar transação/`upsert` no backend.
 5. O carimbo do passaporte é uma conquista de aluno vinculada à aula e ao conteúdo (`ConquistaPassaporte`). Não duplicar carimbos da mesma aula e conteúdo.
 6. `AvaliacaoPMA` mantém as quatro notas e os três resultados. O backend recalcula os resultados antes de persistir e verifica o acesso do professor.
-7. `ModuloCurricular` contém quatro `MissaoSemanal` por ciclo; uma missão pode englobar duas aulas. As **27 casas** agora são `CasaHabilidade`, separadas das missões. `AulaHabilidade` informa quais casas foram trabalhadas.
-8. As **estrelas são contagens derivadas** de `Presenca = PRESENTE` em `Aula = REALIZADA` relacionadas a `AulaHabilidade`, e **não** medem domínio. Não criar uma tabela de estrelas redundantes.
-9. `Dinamica`, `DinamicaHabilidade` e `AplicacaoDinamica` permitem planejar, confirmar e consultar dinâmicas sem removê-las do catálogo.
-10. `ProgressoGraus` guarda os quatro percentuais e a versão da regra aplicada. Não é fonte de verdade isolada; frequência precisa ser derivada das aulas válidas.
+7. `ModuloCurricular` é **compartilhado** entre Kids 01 e Kids 02 (único catálogo). Tem status `PUBLICADO` ou `EM_DESENVOLVIMENTO`; cada módulo publicado possui quatro missões, com descrições para familiares.
+8. `Turma.missaoAtualId` indica a missão atual **do grupo**. Não usar `ProgressoMissao` individual para a Jornada do MVP. Apenas professores da turma podem editar essa relação; os responsáveis consultam apenas a turma do aluno matriculado.
+9. As **27 casas** são referência histórica de habilidades, mas deixam de aparecer no menu do MVP. Estrelas não fazem parte da nova Jornada e não podem ser interpretadas como domínio.
+10. `Dinamica`, `DinamicaHabilidade` e `AplicacaoDinamica` permitem planejar, confirmar e consultar dinâmicas sem removê-las do catálogo.
+11. `ProgressoGraus` guarda os quatro percentuais e a versão da regra aplicada. Não é fonte de verdade isolada; frequência precisa ser derivada das aulas válidas.
 
 ## Regras provisórias que precisam de validação
 

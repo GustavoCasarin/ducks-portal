@@ -34,16 +34,15 @@ enum SituacaoPresenca {
   JUSTIFICADA
 }
 
-enum SituacaoMissao {
-  BLOQUEADA
-  EM_ANDAMENTO
-  CONCLUIDA
-}
-
 enum SituacaoAula {
   PREVISTA
   REALIZADA
   CANCELADA
+}
+
+enum SituacaoConteudoCurricular {
+  EM_DESENVOLVIMENTO
+  PUBLICADO
 }
 
 enum SituacaoDinamica {
@@ -86,7 +85,6 @@ model Aluno {
   presencas       Presenca[]
   avaliacoes      AvaliacaoPMA[]
   progressoGraus  ProgressoGraus?
-  progressoMissoes ProgressoMissao[]
   conquistas      ConquistaPassaporte[]
 }
 
@@ -109,6 +107,8 @@ model Turma {
   ativa        Boolean          @default(true)
   professores  ProfessorTurma[]
   matriculas   Matricula[]
+  missaoAtualId String?           @db.Uuid
+  missaoAtual   MissaoSemanal?    @relation("MissaoAtualTurma", fields: [missaoAtualId], references: [id])
   aulas        Aula[]
   dinamicasPlanejadas AplicacaoDinamica[]
 }
@@ -201,16 +201,18 @@ model ProgressoGraus {
   aluno          Aluno    @relation(fields: [alunoId], references: [id], onDelete: Cascade)
 }
 
-// Um módulo curricular contém quatro missões semanais (duas aulas por missão).
-// A estrutura de currículo NÃO deve ser confundida com as 27 casas de habilidades.
+// Currículo COMPARTILHADO entre Kids 01 e Kids 02.
+// A diferenciação pedagógica está na condução da aula, não no cadastro de missões.
 model ModuloCurricular {
-  id        String          @id @default(uuid()) @db.Uuid
-  numero    Int
-  programa  Programa
-  titulo    String
-  missoes   MissaoSemanal[]
-
-  @@unique([programa, numero])
+  id             String                   @id @default(uuid()) @db.Uuid
+  numero         Int                      @unique
+  titulo         String
+  tema           String?
+  objetivoGeral  String?                  @db.Text
+  resumoFamilia  String?                  @db.Text
+  situacao       SituacaoConteudoCurricular @default(EM_DESENVOLVIMENTO)
+  fonteNotionUrl String?
+  missoes        MissaoSemanal[]
 }
 
 model MissaoSemanal {
@@ -218,27 +220,21 @@ model MissaoSemanal {
   moduloId             String            @db.Uuid
   numero               Int               // 1 a 4 dentro do módulo
   titulo               String
-  descricao            String?
+  descricao            String?           @db.Text // Texto para os responsáveis
+  tema                 String?           @db.Text
+  objetivoPedagogico   String?           @db.Text
+  fonteNotionUrl       String?
   modulo               ModuloCurricular  @relation(fields: [moduloId], references: [id])
+  turmasAtuais         Turma[]            @relation("MissaoAtualTurma")
   aulas                Aula[]
-  progressos           ProgressoMissao[]
   aplicacoesDinamicas  AplicacaoDinamica[]
 
   @@unique([moduloId, numero])
 }
 
-// Uma possível avaliação de missão é distinta de presença e estrelas.
-// As regras para concluir uma missão ainda precisam ser validadas.
-model ProgressoMissao {
-  alunoId       String         @db.Uuid
-  missaoId      String         @db.Uuid
-  situacao      SituacaoMissao @default(BLOQUEADA)
-  concluidaEm   DateTime?
-  aluno         Aluno          @relation(fields: [alunoId], references: [id], onDelete: Cascade)
-  missao        MissaoSemanal  @relation(fields: [missaoId], references: [id])
-
-  @@id([alunoId, missaoId])
-}
+// A missão em andamento pertence à Turma, não ao aluno.
+// A aplicação precisa validar que a missão está PUBLICADA e pertence ao
+// módulo liberado antes de permitir alterações no banco real.
 
 // Casas são HABILIDADES, não missões nem níveis de aprovação.
 model CasaHabilidade {

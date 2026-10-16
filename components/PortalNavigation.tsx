@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, CalendarDays, Compass, House } from "lucide-react";
+import { BookOpen, CalendarDays, House, Layers3 } from "lucide-react";
 
 const itens = [
   { href: "/", rotulo: "Início", icone: House },
-  { href: "/trilha", rotulo: "Trilha", icone: Compass },
+  { href: "/jornada", rotulo: "Jornada", icone: Layers3 },
   { href: "/passaporte", rotulo: "Passaporte", icone: BookOpen },
   { href: "/aulas", rotulo: "Aulas", icone: CalendarDays },
 ];

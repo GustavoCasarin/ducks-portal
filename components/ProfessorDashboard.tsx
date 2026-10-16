@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  ArrowLeft, Library, BookOpenCheck, CalendarCheck2, Check, CheckCheck, ChevronDown,
+  ArrowLeft, Library, BookOpenText, BookOpenCheck, CalendarCheck2, Check, CheckCheck, ChevronDown,
   CircleAlert, ClipboardCheck, ClipboardList, Flame, GraduationCap, Medal,
   RotateCcw, Save, ShieldAlert, Sparkles, Users, X,
 } from "lucide-react";
@@ -112,6 +112,9 @@ export default function ProfessorDashboard() {
             <div><p className="text-xs font-black tracking-[0.2em] text-[#FF6B00]">DUCKS JIU-JITSU</p><p className="text-base font-bold">Painel do Professor</p></div>
           </div>
           <div className="flex flex-wrap gap-2">
+            <Link href="/professor/jornada" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-orange-500/50 bg-orange-500/10 px-3 text-sm font-bold text-orange-300 hover:border-orange-500">
+              <BookOpenText aria-hidden="true" className="h-4 w-4" /> Missão da turma
+            </Link>
             <Link href="/professor/planejamento" className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-[#FF6B00] px-3 text-sm font-bold text-black hover:bg-orange-400">
               <Library aria-hidden="true" className="h-4 w-4" /> Banco de Dinâmicas
             </Link>

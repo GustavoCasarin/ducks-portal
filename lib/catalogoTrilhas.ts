@@ -48,10 +48,8 @@ const NOMES_KIDS_01 = [
   "O Rei da Mesa",
 ] as const;
 
-// A única diferença textual entre os 27 nomes recebidos é a casa 12.
-const NOMES_KIDS_02 = NOMES_KIDS_01.map((nome, index) =>
-  index === 11 ? "4 apoios" : nome,
-);
+// O catálogo das casas foi preservado apenas como referência histórica do método.
+const NOMES_KIDS_02 = NOMES_KIDS_01;
 
 function enumerarCasas(nomes: readonly string[]): readonly CasaTrilha[] {
   return nomes.map((nome, index) => ({ numero: index + 1, nome }));

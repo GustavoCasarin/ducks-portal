@@ -50,5 +50,6 @@ Informações fornecidas pela Ducks para codificação no portal. Esta relação
 - A lista de marcos define somente onde eles aparecem. **Critérios e confirmação de concessão** continuam dependentes da academia; não registrar grau automaticamente por completar aulas/casas.
 - As 27 casas não equivalem às quatro missões de cada módulo. Uma mesma casa pode ser trabalhada em diferentes aulas e missões.
 - O catálogo é gerenciado por programa e número em `lib/catalogoTrilhas.ts`, compatível com a restrição `@@unique([programa, numero])` de `CasaHabilidade` no schema Prisma proposto.
-- Este documento preserva os termos fornecidos pela escola, inclusive `Vapores` na casa 12 de Kids 01. Confirmar grafia oficial com a equipe antes do cadastro definitivo em produção.
+- Correção confirmada posteriormente: a casa 12 é `4 apoios` em ambos os programas.
+- **Histórico:** a visualização das 27 casas deixou de ser o menu de pais do MVP. O menu atual é **Minha Jornada**, com módulos e missões.
 - Os nomes oficiais **não** implicam que já existam avaliações reais. As estrelas da tela atual são fictícias.

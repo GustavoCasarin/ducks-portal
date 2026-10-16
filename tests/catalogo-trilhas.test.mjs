@@ -28,11 +28,11 @@ for (const programa of ["KIDS_01", "KIDS_02"]) {
   });
 }
 
-test("Kids 01 e Kids 02 diferem somente no nome da casa 12", () => {
+test("Kids 01 e Kids 02 compartilham as 27 habilidades", () => {
   const k1 = casasDoPrograma("KIDS_01");
   const k2 = casasDoPrograma("KIDS_02");
-  assert.deepEqual(k1.filter((c, i) => c.nome !== k2[i].nome).map((c) => c.numero), [12]);
-  assert.equal(k1[11].nome, "Vapores");
+  assert.deepEqual(k1, k2);
+  assert.equal(k1[11].nome, "4 apoios");
   assert.equal(k2[11].nome, "4 apoios");
 });
 
