@@ -47,7 +47,7 @@ export const turmasDemo: TurmaDemo[] = [
 ];
 
 export const conteudosDiaDemo = [
-  { id: "tatu", nome: "O Giro do Tatu", categoria: "Missão técnica", descricao: "Exemplo baseado na Casa 7 da trilha." },
+  { id: "tatu", nome: "O Giro do Tatu", categoria: "Missão técnica", descricao: "Referência à Missão 7 do Módulo 2. Não altera a jornada." },
   { id: "aguia", nome: "Águia / Eagle", categoria: "Habilidade animal", descricao: "Vocabulário em cinco idiomas." },
   { id: "persistencia", nome: "Persistência / Persistence", categoria: "Palavra-âncora", descricao: "Eu ainda não consigo — mas posso aprender." },
   { id: "equilibrio", nome: "Equilíbrio", categoria: "Linguagem de combate", descricao: "Conteúdo ilustrativo, ainda não oficializado." },

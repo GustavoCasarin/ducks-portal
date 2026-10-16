@@ -1,4 +1,5 @@
-/** Catálogo fictício: a Ducks ainda fornecerá suas missões e dinâmicas oficiais. */
+/** Dinâmicas fictícias; as missões são importadas do currículo publicado pela Ducks. */
+import { MODULOS_PUBLICADOS } from "./catalogoJornada.ts";
 export interface DinamicaDemo {
   id: string;
   nome: string;
@@ -15,12 +16,15 @@ export const dinamicasDemo: DinamicaDemo[] = [
   { id: "reflexo", nome: "Jogo dos reflexos", objetivo: "Atenção e tomada de decisão", duracao: 10, programas: ["KIDS_02"], materiais: "Bolas macias" },
 ];
 
-export const missoesDemo = [
-  { id: "m3-1", titulo: "Missão 1 (exemplo)", numero: 1, habilidade: "A definir" },
-  { id: "m3-2", titulo: "Missão 2 (exemplo)", numero: 2, habilidade: "A definir" },
-  { id: "m3-3", titulo: "Missão 3 (exemplo)", numero: 3, habilidade: "A definir" },
-  { id: "m3-4", titulo: "Missão 4 · Mobilidade (exemplo)", numero: 4, habilidade: "Mobilidade" },
-] as const;
+export const missoesDemo = MODULOS_PUBLICADOS.flatMap((modulo) =>
+  modulo.missoes.map((missao) => ({
+    id: missao.id,
+    titulo: `Missão ${missao.numero} · ${missao.nome}`,
+    numero: missao.numero,
+    moduloId: modulo.id,
+    tema: missao.tema,
+  })),
+);
 
 export type StatusPlano = "PLANEJADA" | "REALIZADA" | "CANCELADA";
 export interface PlanoDemo {

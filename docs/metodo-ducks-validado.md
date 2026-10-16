@@ -1,6 +1,6 @@
 # Método Ducks — regras consolidadas após conversas com o professor
 
-> Estado: **regras de presença/estrelinhas confirmadas**. As 27 casas por programa foram fornecidas pela Ducks; exemplos de missões e dinâmicas continuam fictícios e seus catálogos oficiais ainda precisam ser validados. Não aplicar migração nem usar dados reais antes da autenticação, autorização e revisão LGPD.
+> Estado: as regras de presença/estrelinhas são históricas e continuam registradas, mas o **MVP do Portal do Aluno foi alterado para Módulos e Missões**. Os Módulos 1 e 2 e as missões 1 a 8 foram lidos no Notion; o catálogo de dinâmicas continua fictício. Não usar dados reais antes da autenticação, autorização e revisão LGPD.
 
 ## 1. Estrutura curricular
 
@@ -50,7 +50,9 @@ No banco real, as consultas devem checar autorização de responsável/professor
 ## 5. Protótipo desta etapa
 
 - `/professor/planejamento`: escolher turma, missão e dinâmica; planejar/confirmar/cancelar, mostrar histórico de uso. Somente dados fictícios e `localStorage` do navegador.
-- `/trilha`: catálogo oficial Kids 01/02, diferenças da casa 12, marcos após 4/9/14/23/27 e estrelas demonstrativas derivadas de presença (sem progressão artificial por casa numérica).
+- `/jornada`: Módulos 1 e 2, missões 1 a 8 do Notion e identificação da missão atual **da turma**. Módulos 3 e 4 ficam como em desenvolvimento.
+- `/professor/jornada`: configuração demonstrativa da missão da turma, sem registrar progresso individual.
+- `/trilha`: redireciona para `/jornada`; o histórico das 27 casas fica fora do MVP.
 - Nenhuma das ações deste protótipo modifica banco real ou acessa dados pessoais.
 
 ## 6. Sequência sugerida de implementação real
@@ -61,3 +63,7 @@ No banco real, as consultas devem checar autorização de responsável/professor
 4. Persistir aulas, habilidades efetivamente trabalhadas, presenças e histórico das dinâmicas.
 5. Consultar estrelas por presença confirmada (derivação), sem misturar com PMA.
 6. Implementar testes de regras, auditoria de edições e autorização, antes de produção.
+
+## 7. Mudança de escopo em 16/10/2026
+
+Após demonstração do protótipo à academia, o menu que exibia as 27 casas foi substituído por **Minha Jornada**. O responsável consulta descrições educativas de módulos e missões e enxerga a missão em curso **na turma**. Não há conclusão individual, estrelinhas ou progresso automático nesta tela. O currículo é compartilhado pelos programas Kids 01 e Kids 02; os professores adaptam a execução no tatame. Os dois primeiros módulos foram declarados completos e os demais seguem em desenvolvimento.

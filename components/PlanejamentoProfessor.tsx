@@ -7,6 +7,8 @@ import {
   Plus, RefreshCcw, ShieldAlert, Sparkles, XCircle,
 } from "lucide-react";
 import { turmasDemo } from "@/lib/professorDemo";
+import { MODULOS_PUBLICADOS } from "@/lib/catalogoJornada";
+import { useMissaoAtualDaTurma } from "@/lib/jornada-turma-store";
 import {
   dinamicasDemo, historicoDinamica, missoesDemo, podeAssociarDinamica,
   type PlanoDemo,
@@ -17,12 +19,16 @@ const PERIODO = "2026.2-demo";
 
 export default function PlanejamentoProfessor() {
   const [turmaId, setTurmaId] = useState(turmasDemo[0].id);
-  const [missaoId, setMissaoId] = useState<string>(missoesDemo[3].id);
+  const [missaoId, setMissaoId] = useState<string>(missoesDemo[0].id);
   const [dinamicaId, setDinamicaId] = useState(dinamicasDemo[0].id);
   const planos = usePlanosDemo();
   const [aviso, setAviso] = useState("");
 
   const turma = turmasDemo.find((t) => t.id === turmaId) ?? turmasDemo[0];
+  const missaoAtualDaTurma = useMissaoAtualDaTurma(turmaId);
+  const missaoEscolhida = missoesDemo.find((m) => m.id === missaoId) ?? missoesDemo[0];
+  const [moduloId, setModuloId] = useState(missaoEscolhida.moduloId);
+  const missoesDoModulo = missoesDemo.filter((item) => item.moduloId === moduloId);
   const missao = missoesDemo.find((m) => m.id === missaoId) ?? missoesDemo[0];
   const banco = dinamicasDemo.filter((d) => d.programas.includes(turma.programa));
   const selecionada = banco.find((d) => d.id === dinamicaId);
@@ -30,10 +36,11 @@ export default function PlanejamentoProfessor() {
     (p) => p.turmaId === turmaId && p.missaoId === missaoId && p.periodo === PERIODO,
   ), [planos, turmaId, missaoId]);
   const ativa = planosContexto.find((p) => p.situacao === "PLANEJADA");
-  const usadas = planosContexto.filter((p) => p.situacao === "REALIZADA");
 
   function alterarTurma(id: string) {
     setTurmaId(id);
+    setModuloId(1);
+    setMissaoId(missoesDemo[0].id);
     const proxima = turmasDemo.find((t) => t.id === id);
     const primeira = dinamicasDemo.find((d) => d.programas.includes(proxima?.programa ?? "KIDS_01"));
     if (primeira) setDinamicaId(primeira.id);
@@ -92,7 +99,7 @@ export default function PlanejamentoProfessor() {
       <main className="mx-auto max-w-5xl space-y-5 px-4 py-6">
         <section role="note" className="flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 text-xs text-amber-200">
           <ShieldAlert aria-hidden="true" className="h-5 w-5 shrink-0" />
-          <p><strong>Modo demonstração.</strong> Nomes, missões e dinâmicas são fictícios. O histórico fica somente neste navegador; não há dados de crianças reais, login nem sincronização com o Supabase.</p>
+          <p><strong>Modo demonstração.</strong> As missões 1 a 8 seguem o catálogo do Notion; alunos e dinâmicas são fictícios. O histórico fica somente neste navegador, sem autenticação ou sincronização com o Supabase.</p>
         </section>
 
         <section className="grid gap-3 rounded-2xl border border-zinc-800 bg-[#18181B] p-4 sm:grid-cols-3">
@@ -104,15 +111,27 @@ export default function PlanejamentoProfessor() {
           </div>
           <div>
             <label htmlFor="modulo-plano" className="mb-2 block text-xs font-semibold text-zinc-400">Módulo</label>
-            <div id="modulo-plano" className="flex min-h-12 items-center rounded-lg border border-zinc-700 bg-zinc-900 px-3 text-sm">Módulo 3 · exemplo</div>
+            <select id="modulo-plano" value={moduloId} onChange={(e) => {
+              const novo = Number(e.target.value);
+              setModuloId(novo);
+              setMissaoId(missoesDemo.find((m) => m.moduloId === novo)?.id ?? missoesDemo[0].id);
+              setAviso("");
+            }} className="min-h-12 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 text-sm">
+              {MODULOS_PUBLICADOS.map((item) => <option key={item.id} value={item.id}>Módulo {item.id} · {item.nome}</option>)}
+            </select>
           </div>
           <div>
             <label htmlFor="missao-plano" className="mb-2 block text-xs font-semibold text-zinc-400">Missão (2 aulas)</label>
             <select id="missao-plano" value={missaoId} onChange={(e) => { setMissaoId(e.target.value); setAviso(""); }} className="min-h-12 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 text-sm">
-              {missoesDemo.map((m) => <option key={m.id} value={m.id}>{m.titulo}</option>)}
+              {missoesDoModulo.map((m) => <option key={m.id} value={m.id}>{m.titulo}</option>)}
             </select>
           </div>
         </section>
+
+        {missaoAtualDaTurma && <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-orange-500/30 bg-orange-500/5 p-3 text-xs text-orange-200">
+          <span>Missão atual desta turma: <strong>{missaoAtualDaTurma.nome}</strong></span>
+          <button type="button" onClick={() => { setModuloId(missaoAtualDaTurma.moduloId); setMissaoId(missaoAtualDaTurma.id); setAviso(""); }} className="min-h-9 rounded-lg border border-orange-500/40 px-3 font-bold">Planejar esta missão</button>
+        </div>}
 
         <section className="rounded-2xl border border-zinc-800 bg-[#18181B] p-4">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -138,7 +157,7 @@ export default function PlanejamentoProfessor() {
             })}
           </fieldset>
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-            <span className="text-xs text-zinc-400">Missão: {missao.titulo} · Habilidade: {missao.habilidade}</span>
+            <span className="text-xs text-zinc-400">Missão: {missao.titulo}</span>
             <button type="button" onClick={associar} disabled={!!ativa || !selecionada} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#FF6B00] px-4 text-sm font-bold text-black disabled:cursor-not-allowed disabled:opacity-40">
               <Plus aria-hidden="true" className="h-4 w-4" /> Associar à missão
             </button>
@@ -166,7 +185,7 @@ export default function PlanejamentoProfessor() {
           </div>
         </section>
         <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-zinc-500"><span className="flex items-center gap-2"><Clock3 className="h-4 w-4" /> Contexto demonstrativo: semestre 2026.2</span><button type="button" onClick={reiniciar} className="inline-flex min-h-11 items-center gap-2 text-zinc-400 hover:text-zinc-200"><RefreshCcw className="h-4 w-4" /> Reiniciar dados fictícios</button></div>
-        <p className="flex items-start gap-2 text-xs text-zinc-500"><Sparkles className="mt-0.5 h-4 w-4 shrink-0" /> Dinâmicas não geram estrelas: estas dependem exclusivamente da presença confirmada em aulas realizadas e vinculadas às habilidades.</p>
+        <p className="flex items-start gap-2 text-xs text-zinc-500"><Sparkles className="mt-0.5 h-4 w-4 shrink-0" /> Associar uma dinâmica à missão não altera automaticamente a missão atual da turma. Essa indicação é definida em “Missão da turma”, no Painel do Professor.</p>
       </main>
     </div>
   );
