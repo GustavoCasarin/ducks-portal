@@ -36,6 +36,18 @@ As quatro rotas do portal (`/`, `/jornada`, `/passaporte`, `/aulas`) têm navega
 
 A missão atual é definida por **turma** em `/professor/jornada` e aparece em `/jornada` e no Dashboard do Aluno. Esta integração é somente demonstrativa via `localStorage`, no mesmo navegador e origem. Banco de dados, autenticação e API ainda **não** estão integrados.
 
+## Histórico PMA e Aula de Hoje — demonstração atual
+
+- `/professor` agora abre **Aula de Hoje**, com chamada, dinâmica previamente planejada e carimbo na mesma página.
+- `/professor/avaliacoes` contém a avaliação PMA mensal, que pode criar ou atualizar a prévia da mesma competência, sem duplicar o histórico.
+- `/evolucao` apresenta gráfico e relatório PMA para os pais, com quatro notas, observação opcional e comparação mensal.
+- `/aulas` e `/passaporte` exibem registros fictícios lançados pelo professor **no mesmo navegador**, usando armazenamento local.
+- O card **Meu Treinamento** substitui os percentuais artificiais de Graus Coloridos no dashboard. Exibe frequência e quantidade de aulas **somente para o mês atual e chamadas demonstrativas salvas**; sem chamada, mostra `—` (não 0%).
+- A faixa continua visível no perfil. Graduação e graus não são calculados automaticamente; o histórico de concessões será modelado antes da integração real.
+- O painel antigo com três abas foi substituído; os links de missão e banco de dinâmicas continuam.
+- **Não é sincronização real:** existem dados simulados e armazenamento `localStorage`, sem login, API ou banco. O Grau Verde oficial não é calculado a partir dessas presenças.
+- Detalhes, testes e limitações estão em [`docs/historico-pma-aula-de-hoje.md`](docs/historico-pma-aula-de-hoje.md).
+
 ## Próximos passos sugeridos
 
 1. Definir e implementar regras de acesso para responsáveis, professores e administradores.
@@ -45,14 +57,14 @@ A missão atual é definida por **turma** em `/professor/jornada` e aparece em `
 
 ## Painel do Professor — demonstração
 
-Acesse **`/professor`** (ou o link no rodapé do dashboard) para testar:
+Na versão atual, acesse **`/professor`** (ou o link no rodapé do dashboard) para testar:
 
 - Seleção de turma Kids 01 / Kids 02.
-- Chamada em lote: marcar todos presentes, desmarcar faltantes e concluir uma prévia.
-- Seleção de conteúdo/carimbo do dia para os presentes.
-- Avaliação PMA mensal com quatro sliders e cálculo demonstrativo.
+- Chamada em lote: marcar todos presentes, desmarcar faltantes e salvar o registro demonstrativo da aula.
+- Seleção de conteúdo/carimbo do dia para os presentes e confirmação de dinâmica previamente planejada.
+- Avaliação PMA mensal em `/professor/avaliacoes` com histórico demonstrativo consultável em `/evolucao`.
 
-**Importante:** o painel utiliza exclusivamente dados fictícios em `lib/professorDemo.ts`. Seu estado existe **somente na memória do navegador**, desaparece após recarregar a página e não é enviado aos responsáveis. A rota ainda é pública e precisa de autenticação/autorização antes de utilizar dados reais.
+**Importante:** o painel utiliza exclusivamente dados fictícios em `lib/professorDemo.ts`. Chamada, carimbos e PMA são salvos no `localStorage` **apenas neste navegador** e alimentam páginas do aluno fictício; não há persistência no servidor nem sincronização real. A rota ainda é pública e precisa de autenticação/autorização antes de utilizar dados reais.
 
 O arquivo `prisma/schema.prisma` e o documento `docs/modelagem-e-regras.md` são **propostas de modelagem**, ainda não aplicadas a banco algum. Os pesos do PMA e os critérios de progressão precisam ser confirmados com a Ducks antes da implementação do backend.
 

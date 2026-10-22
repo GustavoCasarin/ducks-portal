@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import ProfessorDashboard from "@/components/ProfessorDashboard";
+import AulaDeHoje from "@/components/AulaDeHoje";
 
 export const metadata: Metadata = {
-  title: "Painel do Professor | Ducks BJJ",
-  description: "Demonstração do painel de chamada, carimbos e avaliações PMA.",
+  title: "Aula de Hoje | Ducks BJJ",
+  description: "Demonstração unificada da rotina de chamada, dinâmicas e carimbos.",
 };
-
-export default function ProfessorPage() {
-  return <ProfessorDashboard />;
-}
+export default function ProfessorPage() { return <AulaDeHoje />; }
