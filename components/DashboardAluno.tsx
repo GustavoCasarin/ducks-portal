@@ -5,8 +5,12 @@ import Image from 'next/image';
 import PortalNavigation from '@/components/PortalNavigation';
 import { alunoDemo } from '@/lib/alunoDemo';
 import ResumoJornada from '@/components/ResumoJornada';
+import { useRegistrosDemo } from '@/lib/registros-store';
+import { avaliacoesDeAluno, resumoFrequenciaMensal } from '@/lib/registrosDemo';
+import { calcularPMA } from '@/lib/pma';
 import {
-    Award,
+    CalendarCheck2,
+    CalendarDays,
     Flame,
     Volume2,
     User,
@@ -16,6 +20,13 @@ import {
 
 export default function DashboardAluno() {
     const aluno = alunoDemo;
+    const registros = useRegistrosDemo();
+    const ultimaAvaliacao = avaliacoesDeAluno(registros, aluno.id).at(-1);
+    const pmaAtual = ultimaAvaliacao ? calcularPMA(ultimaAvaliacao.notas) : aluno.pma;
+    const hoje = new Date();
+    const competenciaAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
+    const frequencia = resumoFrequenciaMensal(registros, aluno.turmaId, aluno.id, competenciaAtual);
+    const mesReferencia = hoje.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
 
     return (
         <div className="min-h-screen bg-[#0F0F11] text-zinc-100 pb-24 font-sans max-w-md mx-auto relative border-x border-zinc-800">
@@ -60,88 +71,65 @@ export default function DashboardAluno() {
                             <Flame className="w-5 h-5 text-[#FF6B00]" />
                             <h2 className="text-sm font-bold uppercase tracking-wide text-zinc-200">Termômetro PMA</h2>
                         </div>
-                        <span className="text-[11px] text-zinc-400 bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Mês Atual</span>
+                        <span className="text-[11px] text-zinc-400 bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">{ultimaAvaliacao ? `Ref. ${ultimaAvaliacao.competencia}` : "Sem avaliação"}</span>
                     </div>
 
                     <div className="grid grid-cols-3 gap-2 bg-zinc-900/80 p-3 rounded-xl border border-zinc-800/80 text-center">
                         <div>
                             <span className="block text-[10px] text-zinc-400 font-medium">Comportamento</span>
-                            <span className="text-lg font-extrabold text-amber-400">{aluno.pma.comportamental.toFixed(1)}</span>
+                            <span className="text-lg font-extrabold text-amber-400">{pmaAtual.comportamental.toFixed(1)}</span>
                         </div>
                         <div className="border-x border-zinc-800">
                             <span className="block text-[10px] text-zinc-400 font-medium">Técnico</span>
-                            <span className="text-lg font-extrabold text-blue-400">{aluno.pma.tecnico.toFixed(1)}</span>
+                            <span className="text-lg font-extrabold text-blue-400">{pmaAtual.tecnico.toFixed(1)}</span>
                         </div>
                         <div>
                             <span className="block text-[10px] text-zinc-400 font-medium">PMA Geral</span>
-                            <span className="text-lg font-extrabold text-[#FF6B00]">{aluno.pma.geral.toFixed(2)}</span>
+                            <span className="text-lg font-extrabold text-[#FF6B00]">{pmaAtual.geral.toFixed(2)}</span>
                         </div>
                     </div>
+                    <Link href="/evolucao" className="mt-3 flex min-h-11 items-center justify-center rounded-xl border border-orange-500/40 bg-orange-500/10 text-xs font-bold text-orange-300 hover:bg-orange-500/20">
+                        Ver histórico e evolução do PMA →
+                    </Link>
+                    <p className="mt-2 text-[10px] text-zinc-500">Dados fictícios · Critérios de cálculo ainda provisórios</p>
                 </section>
 
-                {/* 3. PAINEL DOS 4 GRAUS COLORIDOS (COMPORTAMENTAL) */}
-                <section className="bg-[#18181B] border border-zinc-800 rounded-2xl p-4 shadow-sm space-y-3">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-sm font-bold uppercase tracking-wide text-zinc-200 flex items-center gap-2">
-                            <Award className="w-5 h-5 text-[#FF6B00]" />
-                            Graus Coloridos
+                {/* 3. FREQUÊNCIA DO MÊS — DERIVADA DAS CHAMADAS DO MVP DEMONSTRATIVO */}
+                <section aria-label="Resumo de frequência" className="rounded-2xl border border-zinc-800 bg-[#18181B] p-4 shadow-sm space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                        <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-zinc-200">
+                            <CalendarCheck2 aria-hidden="true" className="h-5 w-5 text-[#FF6B00]" />
+                            Meu Treinamento
                         </h2>
-                        <span className="text-[11px] text-zinc-400">Requisito de Faixa</span>
+                        <span className="text-[11px] text-zinc-400 capitalize">{mesReferencia}</span>
                     </div>
-
                     <div className="grid grid-cols-2 gap-3">
-                        {/* Atenção - Vermelho */}
-                        <div className="bg-zinc-900/90 border border-zinc-800 p-3 rounded-xl">
-                            <div className="flex items-center justify-between text-xs mb-1.5">
-                                <span className="font-semibold text-red-400 flex items-center gap-1">
-                                    <span className="w-2 h-2 rounded-full bg-red-500"></span> Atenção
-                                </span>
-                                <span className="font-bold text-zinc-300">{aluno.grausColoridos.atencao}%</span>
-                            </div>
-                            <div className="w-full bg-zinc-800 h-2 rounded-full overflow-hidden">
-                                <div className="bg-red-500 h-full rounded-full transition-all duration-500" style={{ width: `${aluno.grausColoridos.atencao}%` }}></div>
-                            </div>
+                        <div className="rounded-xl border border-zinc-800 bg-zinc-900/90 p-3">
+                            <span className="block text-[11px] text-zinc-400">Frequência registrada</span>
+                            <span className="mt-1 block text-2xl font-extrabold text-emerald-400">
+                                {frequencia.percentual === null ? '—' : `${frequencia.percentual}%`}
+                            </span>
+                            <span className="mt-1 block text-[10px] text-zinc-500">Das chamadas deste mês</span>
                         </div>
-
-                        {/* Disciplina - Amarelo */}
-                        <div className="bg-zinc-900/90 border border-zinc-800 p-3 rounded-xl">
-                            <div className="flex items-center justify-between text-xs mb-1.5">
-                                <span className="font-semibold text-amber-400 flex items-center gap-1">
-                                    <span className="w-2 h-2 rounded-full bg-amber-400"></span> Disciplina
-                                </span>
-                                <span className="font-bold text-zinc-300">{aluno.grausColoridos.disciplina}%</span>
-                            </div>
-                            <div className="w-full bg-zinc-800 h-2 rounded-full overflow-hidden">
-                                <div className="bg-amber-400 h-full rounded-full transition-all duration-500" style={{ width: `${aluno.grausColoridos.disciplina}%` }}></div>
-                            </div>
-                        </div>
-
-                        {/* Respeito - Azul */}
-                        <div className="bg-zinc-900/90 border border-zinc-800 p-3 rounded-xl">
-                            <div className="flex items-center justify-between text-xs mb-1.5">
-                                <span className="font-semibold text-blue-400 flex items-center gap-1">
-                                    <span className="w-2 h-2 rounded-full bg-blue-500"></span> Respeito
-                                </span>
-                                <span className="font-bold text-zinc-300">{aluno.grausColoridos.respeito}%</span>
-                            </div>
-                            <div className="w-full bg-zinc-800 h-2 rounded-full overflow-hidden">
-                                <div className="bg-blue-500 h-full rounded-full transition-all duration-500" style={{ width: `${aluno.grausColoridos.respeito}%` }}></div>
-                            </div>
-                        </div>
-
-                        {/* Frequência - Verde */}
-                        <div className="bg-zinc-900/90 border border-zinc-800 p-3 rounded-xl">
-                            <div className="flex items-center justify-between text-xs mb-1.5">
-                                <span className="font-semibold text-emerald-400 flex items-center gap-1">
-                                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Frequência
-                                </span>
-                                <span className="font-bold text-zinc-300">{aluno.grausColoridos.frequencia}%</span>
-                            </div>
-                            <div className="w-full bg-zinc-800 h-2 rounded-full overflow-hidden">
-                                <div className="bg-emerald-500 h-full rounded-full transition-all duration-500" style={{ width: `${aluno.grausColoridos.frequencia}%` }}></div>
-                            </div>
+                        <div className="rounded-xl border border-zinc-800 bg-zinc-900/90 p-3">
+                            <span className="block text-[11px] text-zinc-400">Aulas frequentadas</span>
+                            <span className="mt-1 block text-2xl font-extrabold text-white">
+                                {frequencia.presentes}<span className="text-sm font-semibold text-zinc-500"> / {frequencia.aulasRegistradas}</span>
+                            </span>
+                            <span className="mt-1 block text-[10px] text-zinc-500">Aulas com chamada salva</span>
                         </div>
                     </div>
+                    {frequencia.aulasRegistradas === 0 && (
+                        <p className="rounded-lg border border-dashed border-zinc-700 p-3 text-xs text-zinc-400">
+                            Ainda não há chamadas registradas para este aluno neste mês.
+                        </p>
+                    )}
+                    <Link href="/aulas" className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-zinc-700 bg-zinc-900 text-xs font-bold text-zinc-200 transition-colors hover:border-[#FF6B00] hover:text-[#FF6B00]">
+                        <CalendarDays aria-hidden="true" className="h-4 w-4" /> Ver histórico de aulas →
+                    </Link>
+                    <p className="text-[10px] leading-relaxed text-zinc-500">
+                        Prévia com dados fictícios do navegador. Não representa grau, graduação nem a frequência oficial da academia.
+                    </p>
                 </section>
 
                 {/* 4. CURRÍCULO DA TURMA (MÓDULOS E MISSÕES) */}

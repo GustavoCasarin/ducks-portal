@@ -84,7 +84,6 @@ model Aluno {
   matriculas      Matricula[]
   presencas       Presenca[]
   avaliacoes      AvaliacaoPMA[]
-  progressoGraus  ProgressoGraus?
   conquistas      ConquistaPassaporte[]
 }
 
@@ -183,6 +182,8 @@ model AvaliacaoPMA {
   pmaTecnico        Float
   pmaGeral          Float
   dataAvaliacao     DateTime @default(now())
+  observacao        String?  @db.VarChar(280) // Contexto opcional; moderação e permissão no backend
+  versaoRegra       String   @default("provisoria-v1") // Garantir comparabilidade do histórico
   aluno             Aluno    @relation(fields: [alunoId], references: [id], onDelete: Cascade)
   avaliador         Usuario  @relation(fields: [avaliadorId], references: [id])
 
@@ -190,16 +191,12 @@ model AvaliacaoPMA {
   @@index([alunoId, dataAvaliacao])
 }
 
-model ProgressoGraus {
-  alunoId        String   @id @db.Uuid
-  atencao        Int      @default(0)
-  disciplina     Int      @default(0)
-  respeito       Int      @default(0)
-  frequencia     Int      @default(0)
-  versaoRegra    String   @default("rascunho-v1")
-  atualizadoEm   DateTime @updatedAt
-  aluno          Aluno    @relation(fields: [alunoId], references: [id], onDelete: Cascade)
-}
+// Os antigos percentuais de Graus Coloridos foram removidos da proposta.
+// Graduação futura (a modelar após homologação):
+// - Graus Coloridos são concedidos uma única vez na etapa inicial da faixa branca;
+// - após a primeira troca de faixa, aplicam-se graus brancos tradicionais;
+// - cada concessão e troca de faixa exige registro histórico, não é deduzida do PMA.
+// Ainda não há tabela de graduação nem migração aplicada.
 
 // Currículo COMPARTILHADO entre Kids 01 e Kids 02.
 // A diferenciação pedagógica está na condução da aula, não no cadastro de missões.

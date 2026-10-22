@@ -14,7 +14,8 @@ Este documento descreve **uma proposta técnica**, ainda sujeita à aprovação 
 8. `Turma.missaoAtualId` indica a missão atual **do grupo**. Não usar `ProgressoMissao` individual para a Jornada do MVP. Apenas professores da turma podem editar essa relação; os responsáveis consultam apenas a turma do aluno matriculado.
 9. As **27 casas** são referência histórica de habilidades, mas deixam de aparecer no menu do MVP. Estrelas não fazem parte da nova Jornada e não podem ser interpretadas como domínio.
 10. `Dinamica`, `DinamicaHabilidade` e `AplicacaoDinamica` permitem planejar, confirmar e consultar dinâmicas sem removê-las do catálogo.
-11. `ProgressoGraus` guarda os quatro percentuais e a versão da regra aplicada. Não é fonte de verdade isolada; frequência precisa ser derivada das aulas válidas.
+11. O card de **Frequência registrada** substituiu os antigos percentuais artificiais de Graus Coloridos. A prévia mensal usa somente chamadas efetivamente registradas na demonstração; sem aulas lançadas, a porcentagem é indefinida (`—`).
+12. A graduação será modelada separadamente após homologação: os Graus Coloridos são concedidos uma única vez na etapa inicial da faixa branca; após a primeira troca de faixa, os graus passam a ser brancos. Não deduzir concessões de graus a partir do PMA.
 
 ## Regras provisórias que precisam de validação
 
@@ -23,8 +24,8 @@ Este documento descreve **uma proposta técnica**, ainda sujeita à aprovação 
 - **PMA técnico** = nota Técnica.
 - **PMA geral** = média entre PMA comportamental não arredondado e PMA técnico (arredondada para 2 casas decimais).
 - A frequência não entra no PMA demonstrativo. O denominador oficial (aulas previstas, reposições, justificativas, matrículas parciais) ainda precisa ser definido.
-- Os critérios para transformar notas em Graus Coloridos, para concluir uma **missão** e para troca de faixa **não estão definidos**: não adotar fórmulas arbitrárias em produção. **As casas não precisam ser concluídas para receber estrelas.**
-- A lista de 27 casas por programa já foi fornecida (`docs/catalogo-27-casas.md`); somente a casa 12 difere entre Kids 01 e Kids 02. Os marcos visuais de grau após as casas 4/9/14/23/27 não constituem concessão automática. As missões são semanais, e não uma sequência de 27 casas. Veja `docs/metodo-ducks-validado.md`.
+- Os critérios de **concessão de graus**, de conclusão de **missão** e de troca de faixa **não estão definidos**: não adotar fórmulas arbitrárias em produção. **As casas não precisam ser concluídas para receber estrelas.**
+- A lista histórica de 27 casas por programa já foi fornecida (`docs/catalogo-27-casas.md`); a casa 12 é **4 apoios** em ambos os programas. Os marcos visuais de grau após as casas 4/9/14/23/27 não constituem concessão automática. As missões são semanais, e não uma sequência de 27 casas. Veja `docs/metodo-ducks-validado.md`.
 
 ## Segurança e dados de crianças
 
