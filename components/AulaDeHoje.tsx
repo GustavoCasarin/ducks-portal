@@ -79,7 +79,6 @@ export default function AulaDeHoje() {
         <Link href="/professor/jornada" className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-zinc-700 px-3 text-zinc-200"><BookOpenText className="h-4 w-4 text-orange-400" /> Missão da turma</Link>
         <Link href="/professor/planejamento" className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-zinc-700 px-3 text-zinc-200"><Library className="h-4 w-4 text-orange-400" /> Banco de Dinâmicas</Link>
         <Link href="/professor/avaliacoes" className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-orange-500/50 px-3 text-orange-300"><ChartNoAxesCombined className="h-4 w-4" /> Avaliação PMA mensal</Link>
-        <Link href="/" className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-zinc-700 px-3 text-zinc-400">Portal dos pais</Link>
       </nav>
     </div></header>
     <main className="mx-auto max-w-5xl space-y-4 px-4 py-6">
